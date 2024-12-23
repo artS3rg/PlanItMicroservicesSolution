@@ -108,26 +108,5 @@ namespace Auth.Services
                 await _context.SaveChangesAsync();
             }
         }
-
-        // Метод для преобразования User в UserDto
-        private UserDto MapToUserDto(User user)
-        {
-            return new UserDto
-            {
-                Id = user.Id,
-                Login = user.Login,
-            };
-        }
-
-        // Метод для преобразования UserDto в User
-        private User MapToUser(UserDto userDto)
-        {
-            return new User
-            {
-                Id = userDto.Id,
-                Login = userDto.Login,
-                // PasswordHash и Salt не устанавливаются напрямую из DTO
-            };
-        }
     }
 }

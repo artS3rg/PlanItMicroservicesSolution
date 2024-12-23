@@ -2,7 +2,6 @@ using Common;
 using Core.Interfaces;
 using Core.DataBaseContext;
 using Data.Services;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>(o => o.UseNpgsql("Host=localhost;Database=planitdb;Username=postgres;Password=postgre"));
+builder.Services.AddDbContext<AppDbContext>();
 
 builder.Services.AddSingleton(new MessageBroker("localhost"));
 builder.Services.AddScoped<ITaskService, TaskService>();

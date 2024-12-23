@@ -24,7 +24,7 @@ namespace Core.DataBaseContext
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Host=localhost;Database=planitdb;Username=postgres;Password=postgre");
+                optionsBuilder.UseNpgsql(File.ReadAllText("key.txt"));
             }
         }
     }

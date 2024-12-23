@@ -3,7 +3,6 @@ using Core.Interfaces;
 using Core.Models;
 using Core.DataBaseContext;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 namespace Data.Services
@@ -24,17 +23,18 @@ namespace Data.Services
             return subtask != null ? MapToSubtask(subtask) : null;
         }
 
-        public async Task<IEnumerable<SubtaskDto>> GetAllSubtasksAsync(int subtaskId)
+        public async Task<IEnumerable<SubtaskDto>> GetAllSubtasksAsync(int taskId)
         {
             // Получаем все подзадачи для указанной задачи
             var subtasks = await _context.Subtasks
-                .Where(s => s.TaskId == subtaskId)
+                .Where(s => s.TaskId == taskId)
                 .ToListAsync();
 
             // Преобразуем подзадачи в DTO
             return subtasks.Select(s => new SubtaskDto
             {
                 Id = s.Id,
+                TaskId = s.TaskId,
                 Title = s.Title,
                 IsCompleted = s.IsCompleted
             });
@@ -42,6 +42,15 @@ namespace Data.Services
 
         public async Task AddSubtaskAsync(SubtaskDto subtaskDto)
         {
+            // Проверяем, существует ли задача с указанным ID
+            var taskExists = await _context.Tasks.AnyAsync(t => t.Id == subtaskDto.TaskId);
+
+            if (!taskExists)
+            {
+                // Если задачи не существует, выбрасываем исключение или выводим сообщение
+                throw new InvalidOperationException($"Невозможно создать подзадачу. Задача с ID {subtaskDto.TaskId} не найдена.");
+            }
+
             // Создаем новую подзадачу на основе DTO
             var subtask = new Subtask
             {
@@ -81,6 +90,7 @@ namespace Data.Services
         {
             return new SubtaskDto
             {
+                Id = subtaskDto.Id,
                 TaskId = subtaskDto.TaskId,
                 Title = subtaskDto.Title,
                 IsCompleted = false,

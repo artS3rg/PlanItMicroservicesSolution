@@ -6,30 +6,39 @@ namespace GameService
     public class GameServiceListener : BackgroundService
     {
         private readonly MessageBroker _broker;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
-        private readonly IGamificationService _gameService;
+        private readonly IServiceProvider _services;
 
-        // Используем IServiceScopeFactory для создания нового scope
-        public GameServiceListener(IGamificationService gameService, IServiceScopeFactory serviceScopeFactory)
+        public GameServiceListener(IServiceProvider services)
         {
-            _gameService = gameService;
-            _serviceScopeFactory = serviceScopeFactory;
+            _services = services;
             _broker = new MessageBroker("localhost");
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // Подписка на очередь сообщений
+            // Подписываемся на очередь сообщений
             _broker.Subscribe("task.completed", OnTaskCompleted);
+
+            Console.WriteLine("[GameService] Listener запущен и подписан на 'task.completed'.");
             return Task.CompletedTask;
         }
 
         private void OnTaskCompleted(string message)
         {
-            // Получение данных из сообщения
-            var taskId = int.Parse(message);
-            _gameService.AddPointsAsync(taskId, 10);
-            Console.WriteLine($"[GameService] Начисление 10 очков за выполнение задачи с ID {taskId}");
+            using (var scope = _services.CreateScope())
+            {
+                var provider = scope.ServiceProvider;
+
+                // Получаем зависимость AppDbContext из созданного scope
+                var dbContext = provider.GetRequiredService<Core.DataBaseContext.AppDbContext>();
+                var gamificationService = provider.GetRequiredService<IGamificationService>();
+
+                // Обработка сообщения
+                var taskId = int.Parse(message);
+                gamificationService.AddPointsAsync(taskId, 10).GetAwaiter().GetResult(); // Синхронный вызов асинхронного метода
+
+                Console.WriteLine($"[GameService] Начисление 10 очков за выполнение задачи с ID {taskId}");
+            }
         }
     }
 }

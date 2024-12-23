@@ -1,8 +1,6 @@
-using Auth.Services;
 using Core.DataBaseContext;
 using Core.Interfaces;
 using Data.Services;
-using Microsoft.EntityFrameworkCore;
 using StatisticsService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>(o => o.UseNpgsql("Host=localhost;Database=planitdb;Username=postgres;Password=postgre"));
+builder.Services.AddDbContext<AppDbContext>();
 
 builder.Services.AddHostedService<StatisticsServiceListener>();
 builder.Services.AddScoped<IStatisticService, StatisticService>();

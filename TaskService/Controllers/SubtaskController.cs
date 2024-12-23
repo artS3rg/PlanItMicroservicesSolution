@@ -4,6 +4,8 @@ using Core.Interfaces;
 using Core.Models;
 using Data.Services;
 using Microsoft.AspNetCore.Mvc;
+using RabbitMQ.Client;
+using System.Threading.Tasks;
 
 namespace PlanItBack.Controllers
 {
@@ -29,6 +31,17 @@ namespace PlanItBack.Controllers
                 return NotFound();
             }
             return Ok(task);
+        }
+
+        [HttpGet("all/{taskId}")]
+        public async Task<IActionResult> GetAllSubtaskByTaskId(int taskId)
+        {
+            var subtasks = await _subtaskService.GetAllSubtasksAsync(taskId);
+            if (subtasks == null)
+            {
+                return NotFound();
+            }
+            return Ok(subtasks);
         }
 
         [HttpPost]

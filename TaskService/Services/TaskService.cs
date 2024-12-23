@@ -1,9 +1,7 @@
 ﻿using Core.DTOs;
 using Core.Interfaces;
-using Core.Models;
 using Core.DataBaseContext;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 using Task = System.Threading.Tasks.Task;
 
 namespace Data.Services
@@ -29,7 +27,7 @@ namespace Data.Services
         {
             var task = await _context.Tasks
                 .Include(t => t.Subtasks)
-                .FirstOrDefaultAsync(t => t.Id == taskId);
+                .SingleOrDefaultAsync(t => t.Id == taskId);
             return task != null ? MapToTaskDto(task) : null;
         }
 
