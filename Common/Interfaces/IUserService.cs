@@ -6,8 +6,8 @@ namespace Core.Interfaces
 {
     public interface IUserService
     {
-        Task<User> GetUserByIdAsync(int userId);
-        Task<User> GetUserByLoginAsync(string login);
+        Task<User?> GetUserByIdAsync(int userId);
+        Task<User?> GetUserByLoginAsync(string login);
         Task AddUserAsync(User user);
         Task UpdateUserAsync(UserDto userDto);
     }

@@ -56,6 +56,10 @@ namespace PlanItBack.Controllers
         public async Task<IActionResult> DeleteTask(int taskId)
         {
             var task = await _taskService.GetTaskByIdAsync(taskId);
+            if (task == null)
+            {
+                return NotFound();
+            }
             _broker.Publish("task.deleted", task.Title);
             await _taskService.DeleteTaskAsync(taskId);
             return NoContent();
@@ -65,6 +69,10 @@ namespace PlanItBack.Controllers
         public async Task<IActionResult> CompleteTask(int taskId)
         {
             var task = await _taskService.GetTaskByIdAsync(taskId);
+            if (task == null)
+            {
+                return NotFound();
+            }
             _broker.Publish("task.completed", task.UserId.ToString());
             await _taskService.CompleteTaskAsync(taskId);
             return Ok("Задача выполнена.");

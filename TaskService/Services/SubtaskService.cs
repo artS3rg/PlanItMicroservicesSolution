@@ -16,7 +16,7 @@ namespace Data.Services
             _context = context;
         }
 
-        public async Task<SubtaskDto> GetSubtaskByIdAsync(int subtaskId)
+        public async Task<SubtaskDto?> GetSubtaskByIdAsync(int subtaskId)
         {
             var subtask = await _context.Subtasks
                 .FirstOrDefaultAsync(t => t.Id == subtaskId);

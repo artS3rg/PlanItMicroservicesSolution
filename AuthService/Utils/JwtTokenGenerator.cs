@@ -20,7 +20,15 @@ namespace Auth.Utils
         public string GenerateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["JwtSettings:SecretKey"]);
+
+            var secretKey = _configuration["JwtSettings:SecretKey"];
+            var time = _configuration["JwtSettings:ExpiresInHours"];
+
+            if (string.IsNullOrEmpty(secretKey) || string.IsNullOrEmpty(time))
+            {
+                throw new InvalidOperationException("SecretKey или Time для JWT не настроен в конфигурации.");
+            }
+            var key = Encoding.ASCII.GetBytes(secretKey);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -29,7 +37,7 @@ namespace Auth.Utils
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Login)
             }),
-                Expires = DateTime.UtcNow.AddHours(double.Parse(_configuration["JwtSettings:ExpiresInHours"])),
+                Expires = DateTime.UtcNow.AddHours(double.Parse(time)),
                 Issuer = _configuration["JwtSettings:Issuer"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

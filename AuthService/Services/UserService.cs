@@ -16,7 +16,7 @@ namespace Auth.Services
             _context = context;
         }
 
-        public async Task<User> GetUserByIdAsync(int userId)
+        public async Task<User?> GetUserByIdAsync(int userId)
         {
             // Получаем пользователя
             var user = await _context.Users
@@ -54,7 +54,7 @@ namespace Auth.Services
             return user;
         }
 
-        public async Task<User> GetUserByLoginAsync(string login)
+        public async Task<User?> GetUserByLoginAsync(string login)
         {
             // Получаем пользователя
             var user = await _context.Users

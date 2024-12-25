@@ -23,7 +23,7 @@ namespace Data.Services
             return tasks.Select(MapToTaskDto);
         }
 
-        public async Task<TaskDto> GetTaskByIdAsync(int taskId)
+        public async Task<TaskDto?> GetTaskByIdAsync(int taskId)
         {
             var task = await _context.Tasks
                 .Include(t => t.Subtasks)

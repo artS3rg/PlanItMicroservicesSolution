@@ -4,7 +4,7 @@ namespace Core.Interfaces
 {
     public interface ISubtaskService
     {
-        Task<SubtaskDto> GetSubtaskByIdAsync(int subtaskId);
+        Task<SubtaskDto?> GetSubtaskByIdAsync(int subtaskId);
         Task<IEnumerable<SubtaskDto>> GetAllSubtasksAsync(int taskId);
         Task AddSubtaskAsync(SubtaskDto subtaskDto);
         Task UpdateSubtaskAsync(SubtaskDto subtaskDto);
